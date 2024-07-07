@@ -3,10 +3,10 @@ import json
 following_count = 0
 follower_count = 0
 
-with open('following.json', 'r') as f:
+with open('connections/following.json', 'r') as f:
     following_array = json.load(f)
 
-with open('followers_1.json', 'r') as f:
+with open('connections/followers_1.json', 'r') as f:
     follower_array = json.load(f)
 
 
