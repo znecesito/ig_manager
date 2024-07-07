@@ -1,35 +1,43 @@
 import json
 
-following_count = 0
-follower_count = 0
+def open_file_paths(input_file):
 
-with open('connections/following.json', 'r') as f:
-    following_array = json.load(f)
+    directory_path = input("Enter file path for %s: " % (input_file))
 
-with open('connections/followers_1.json', 'r') as f:
-    follower_array = json.load(f)
+    with open(directory_path, 'r') as f:
+        return json.load(f)
 
+def list_accounts(account_array):
+    account_list = []
 
-following_dict = following_array['relationships_following']
-following_list = []
-follower_list = []
+    for json_object in account_array:
+        account = json_object['string_list_data'][0]
+        account_list.append(account['value'])
 
-for json_object in following_dict:
-    account = json_object['string_list_data'][0]
-    following_list.append(account['value'])
-    following_count += 1
+    return account_list
 
-for json_object in follower_array:
-    account = json_object['string_list_data'][0]
-    follower_list.append(account['value'])
-    follower_count += 1
+def unfollow_calculator(followers, following):
+    count = 0
 
-print("These dickheads aren't following you back:")
+    for account in following:
+        if account in followers:
+            continue
+        else:
+            count += 1
+            print("%d\t%s" % (count,account))  
 
-count = 0
-for account in following_list:
-    if account in follower_list:
-        continue
-    else:
-        count += 1
-        print("%d\t%s" % (count,account))
+def main():
+
+    following_array = open_file_paths('following')
+    follower_array = open_file_paths('followers')
+    following_array = following_array['relationships_following']
+
+    following_accounts = list_accounts(following_array)
+    follower_accounts = list_accounts(follower_array)
+
+    print("These dickheads aren't following you back:")
+
+    unfollow_calculator(follower_accounts, following_accounts)
+
+if __name__ == "__main__":
+         main()
