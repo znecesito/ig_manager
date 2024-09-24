@@ -1,5 +1,12 @@
 import json
 
+def message_tracker():
+    
+    with open('messages/inbox/aadya_1361219638612809/message_1.json', 'r') as f:
+        message_thread = json.load(f)
+
+    print(message_thread['messages'][1]['content'])
+
 def open_file_paths(input_file):
 
     directory_path = input("Enter file path for %s: " % (input_file))
@@ -28,10 +35,11 @@ def unfollow_calculator(followers, following):
 
 def main():
 
+    #message_tracker()
+
     following_array = open_file_paths('following')
     follower_array = open_file_paths('followers')
     following_array = following_array['relationships_following']
-
     following_accounts = list_accounts(following_array)
     follower_accounts = list_accounts(follower_array)
 
