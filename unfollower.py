@@ -1,11 +1,25 @@
 import json
+import os
 
 def message_tracker():
     
-    with open('messages/inbox/aadya_1361219638612809/message_1.json', 'r') as f:
-        message_thread = json.load(f)
+    for subdir, dirs, files in os.walk('messages/inbox/'):
+        for file in files:
+            filepath = subdir + os.sep + file
+            if filepath.endswith(".json"): 
+                #print(filepath)
+                with open(filepath, 'r') as f:
+                    message_thread = json.load(f)
 
-    print(message_thread['messages'][1]['content'])
+                    first_message = len(message_thread['messages']) - 1
+                    try:
+                        #dummy = message_thread['messages'][first_message]['content']
+                        print(message_thread['messages'][first_message]['content'])
+                    except Exception as e:
+                        #print("-------------------------- First message does not have content")
+                        #print(filepath)
+                        print(e)
+                        continue
 
 def open_file_paths(input_file):
 
@@ -35,8 +49,8 @@ def unfollow_calculator(followers, following):
 
 def main():
 
-    #message_tracker()
-
+    message_tracker()
+    exit()
     following_array = open_file_paths('following')
     follower_array = open_file_paths('followers')
     following_array = following_array['relationships_following']
