@@ -1,7 +1,27 @@
 import json
 import os
 
+def message_regulator(first_message):
+
+    hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
+
+    first_word = first_message.lower().split()[0]
+    last_word = first_message.lower().split()[-1]
+
+    # if first_word == 'why':
+    #     print(first_message)
+
+    if first_word in hi_pattern:
+        return "Hey/Hi/Hello ...."
+
+    if last_word == 'question':
+        return "I have a question/quick question"
+
+    return first_word
+
 def message_tracker():
+
+    message_dict = {}
     
     for subdir, dirs, files in os.walk('messages/inbox/'):
         for file in files:
@@ -9,17 +29,24 @@ def message_tracker():
             if filepath.endswith(".json"): 
                 #print(filepath)
                 with open(filepath, 'r') as f:
-                    message_thread = json.load(f)
+                    account_inbox = json.load(f)
 
-                    first_message = len(message_thread['messages']) - 1
+                    message_thread = len(account_inbox['messages']) - 1
                     try:
-                        #dummy = message_thread['messages'][first_message]['content']
-                        print(message_thread['messages'][first_message]['content'])
+                        first_message = account_inbox['messages'][message_thread]['content']
+                        # print(first_message)
                     except Exception as e:
-                        #print("-------------------------- First message does not have content")
-                        #print(filepath)
-                        print(e)
-                        continue
+                        first_message = "-------------------------- First message does not have content"
+
+                    fmessage_key = message_regulator(first_message)
+
+                    if fmessage_key in message_dict:
+                        message_dict[fmessage_key] += 1
+                    else:
+                        message_dict[fmessage_key] = 1
+
+    print(message_dict)
+    # print(sorted(message_dict, key=message_dict.get, reverse=True))
 
 def open_file_paths(input_file):
 
