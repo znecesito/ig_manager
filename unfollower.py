@@ -1,25 +1,32 @@
 import json
 import os
+from MessageThread import MessageThread
 
-def message_regulator(first_message):
+def message_regulator(first_message, filepath, message_thread_length):
 
     hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
 
     first_word = first_message.lower().split()[0]
     last_word = first_message.lower().split()[-1]
 
-    # if first_word == 'why':
+    # if first_word == 'idk':
     #     print(first_message)
 
-    if first_word in hi_pattern:
+    if 'english' in first_message.lower():
+        print(filepath, message_thread_length)
+        return "English or <insert language>?"
+    elif first_word in hi_pattern:
         return "Hey/Hi/Hello ...."
-
-    if last_word == 'question':
+    elif last_word == 'question':
         return "I have a question/quick question"
 
     return first_word
 
 def message_tracker():
+
+    obj = MessageThread(19)
+    obj.print_value()
+    exit()
 
     message_dict = {}
     
@@ -29,23 +36,24 @@ def message_tracker():
             if filepath.endswith(".json"): 
                 #print(filepath)
                 with open(filepath, 'r') as f:
-                    account_inbox = json.load(f)
+                    message_thread = json.load(f)
 
-                    message_thread = len(account_inbox['messages']) - 1
+                    message_thread_length = len(message_thread['messages']) - 1
                     try:
-                        first_message = account_inbox['messages'][message_thread]['content']
+                        first_message = message_thread['messages'][message_thread_length]['content']
                         # print(first_message)
                     except Exception as e:
-                        first_message = "-------------------------- First message does not have content"
+                        continue
+                        # first_message = "-------------------------- First message does not have content"
 
-                    fmessage_key = message_regulator(first_message)
+                    fmessage_key = message_regulator(first_message, filepath, message_thread_length)
 
                     if fmessage_key in message_dict:
                         message_dict[fmessage_key] += 1
                     else:
                         message_dict[fmessage_key] = 1
 
-    print(message_dict)
+    # print(message_dict)
     # print(sorted(message_dict, key=message_dict.get, reverse=True))
 
 def open_file_paths(input_file):
