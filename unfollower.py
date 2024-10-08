@@ -1,8 +1,8 @@
 import json
 import os
-from MessageThread import MessageThread
+from messageopener import MessageOpener
 
-def message_regulator(first_message, filepath, message_thread_length):
+def message_regulator(first_message):
 
     hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
 
@@ -13,7 +13,6 @@ def message_regulator(first_message, filepath, message_thread_length):
     #     print(first_message)
 
     if 'english' in first_message.lower():
-        print(filepath, message_thread_length)
         return "English or <insert language>?"
     elif first_word in hi_pattern:
         return "Hey/Hi/Hello ...."
@@ -24,11 +23,11 @@ def message_regulator(first_message, filepath, message_thread_length):
 
 def message_tracker():
 
-    obj = MessageThread(19)
-    obj.print_value()
-    exit()
+    # obj = MessageOpener(19)
+    # obj.print_value()
+    # exit()
 
-    message_dict = {}
+    message_opener_set = {}
     
     for subdir, dirs, files in os.walk('messages/inbox/'):
         for file in files:
@@ -46,15 +45,15 @@ def message_tracker():
                         continue
                         # first_message = "-------------------------- First message does not have content"
 
-                    fmessage_key = message_regulator(first_message, filepath, message_thread_length)
+                    opening_line_pattern = message_regulator(first_message)
 
-                    if fmessage_key in message_dict:
-                        message_dict[fmessage_key] += 1
+                    if opening_line_pattern in message_opener_set:
+                        message_opener_set[opening_line_pattern] += 1
                     else:
-                        message_dict[fmessage_key] = 1
+                        message_opener_set[opening_line_pattern] = 1
 
-    # print(message_dict)
-    # print(sorted(message_dict, key=message_dict.get, reverse=True))
+    print(message_opener_set)
+    # print(sorted(message_opener_set, key=message_opener_set.get, reverse=True))
 
 def open_file_paths(input_file):
 
