@@ -2,6 +2,18 @@ import json
 import os
 from messageopener import MessageOpener
 
+def add_message_opener_to_set(message_opener_set, pattern):
+    new_opener = MessageOpener(pattern)
+
+    # Check if an opener with the same pattern already exists in the set
+    if new_opener in message_opener_set:
+        for opener in message_opener_set:
+            if opener == new_opener:
+                opener.total_count += 1  # Increase the count if a opener with the same make and model exists
+                break
+    else:
+        message_opener_set.add(new_opener)  # Add the new opener to the set if it doesn't exist
+
 def message_regulator(first_message):
 
     hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
@@ -23,11 +35,11 @@ def message_regulator(first_message):
 
 def message_tracker():
 
-    # obj = MessageOpener(19)
-    # obj.print_value()
+    # obj = MessageOpener("Hi", 1)
+    # print(obj.pattern, obj.total_count)
     # exit()
 
-    message_opener_set = {}
+    message_opener_set = set()
     
     for subdir, dirs, files in os.walk('messages/inbox/'):
         for file in files:
@@ -46,14 +58,12 @@ def message_tracker():
                         # first_message = "-------------------------- First message does not have content"
 
                     opening_line_pattern = message_regulator(first_message)
+                    add_message_opener_to_set(message_opener_set, opening_line_pattern)
 
-                    if opening_line_pattern in message_opener_set:
-                        message_opener_set[opening_line_pattern] += 1
-                    else:
-                        message_opener_set[opening_line_pattern] = 1
+    for opener in message_opener_set:
+        print(opener)
+    # print(message_opener_set)
 
-    print(message_opener_set)
-    # print(sorted(message_opener_set, key=message_opener_set.get, reverse=True))
 
 def open_file_paths(input_file):
 
