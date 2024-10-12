@@ -27,17 +27,14 @@ def message_regulator(first_message):
     if 'english' in first_message.lower():
         return "English or <insert language>?"
     elif first_word in hi_pattern:
-        return "Hey/Hi/Hello ...."
+        return "Hey/Hi/Hello <name>"
     elif last_word == 'question':
         return "I have a question/quick question"
+    else:
+        return "Random unimportant opener"
 
-    return first_word
 
 def message_tracker():
-
-    # obj = MessageOpener("Hi", 1)
-    # print(obj.pattern, obj.total_count)
-    # exit()
 
     message_opener_set = set()
     
@@ -51,18 +48,17 @@ def message_tracker():
 
                     message_thread_length = len(message_thread['messages']) - 1
                     try:
-                        first_message = message_thread['messages'][message_thread_length]['content']
-                        # print(first_message)
+                        first_message = message_thread['messages'][-1]['content']
                     except Exception as e:
-                        continue
-                        # first_message = "-------------------------- First message does not have content"
+                        add_message_opener_to_set(message_opener_set, "Exception: First message was unsent")
 
-                    opening_line_pattern = message_regulator(first_message)
-                    add_message_opener_to_set(message_opener_set, opening_line_pattern)
+                    opening_line_pattern = message_regulator(first_message) # Finds pattern in opener. Maybe should rename it to patternfinder
+                    add_message_opener_to_set(message_opener_set, opening_line_pattern) # Adding new opener object to set and adding to count if it object already exists within set
+                    # responserate(message_thread['messages']) returns bool = if true, add 1 to attribute response_count
+                            # update_responses_in_set(message_opener_set, opening_line_pattern) {declare tmp obj in func. if tmp obj in set, iterate set and add 1 to response attribute}
 
     for opener in message_opener_set:
         print(opener)
-    # print(message_opener_set)
 
 
 def open_file_paths(input_file):
