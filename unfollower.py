@@ -2,6 +2,23 @@ import json
 import os
 from messageopener import MessageOpener
 
+def response_checker(messages):
+    for message in messages:
+        if message['sender_name'] != 'zacknecesito':
+            return True
+    return False
+
+def update_response_in_opener_set(message_opener_set, pattern):
+    dummy_opener = MessageOpener(pattern)
+
+    if dummy_opener in message_opener_set:
+        for opener in message_opener_set:
+            if opener == dummy_opener:
+                opener.response()
+                break
+    else:
+        print("Opener is not in set")
+
 def add_message_opener_to_set(message_opener_set, pattern):
     new_opener = MessageOpener(pattern)
 
@@ -30,8 +47,10 @@ def message_regulator(first_message):
         return "Hey/Hi/Hello <name>"
     elif last_word == 'question':
         return "I have a question/quick question"
+    elif 'exception' in first_message.lower():
+        return first_message
     else:
-        return "Random unimportant opener"
+        return "Random opener (immature, hard to quantify through data)"
 
 
 def message_tracker():
@@ -46,20 +65,22 @@ def message_tracker():
                 with open(filepath, 'r') as f:
                     message_thread = json.load(f)
 
-                    message_thread_length = len(message_thread['messages']) - 1
+                    # message_thread_length = len(message_thread['messages']) - 1
                     try:
                         first_message = message_thread['messages'][-1]['content']
                     except Exception as e:
-                        add_message_opener_to_set(message_opener_set, "Exception: First message was unsent")
+                        first_message = "Exception: First message was unsent"
 
                     opening_line_pattern = message_regulator(first_message) # Finds pattern in opener. Maybe should rename it to patternfinder
-                    add_message_opener_to_set(message_opener_set, opening_line_pattern) # Adding new opener object to set and adding to count if it object already exists within set
-                    # responserate(message_thread['messages']) returns bool = if true, add 1 to attribute response_count
-                            # update_responses_in_set(message_opener_set, opening_line_pattern) {declare tmp obj in func. if tmp obj in set, iterate set and add 1 to response attribute}
-
+                    
+                    add_message_opener_to_set(message_opener_set, opening_line_pattern) # Adding new opener object to set and adding to count if it object already exists within set                    
+                    
+                    if response_checker(message_thread['messages']):
+                        update_response_in_opener_set(message_opener_set, opening_line_pattern)
+    print("Let's check your field goal percentage gangy")
     for opener in message_opener_set:
         print(opener)
-
+    print("Yeah give up. What Future say? Chase a check. Never chase a b***.")
 
 def open_file_paths(input_file):
 

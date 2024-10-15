@@ -1,7 +1,17 @@
 class MessageOpener:
     def __init__(self, pattern):
         self.pattern = pattern
-        self.total_count = 1 # Initialize count to 1 when the object is created
+        self.total_count = 1 # Total count this opener was used
+        self.response_count = 0 # Response count for this opener
+
+    def response(self):
+        '''Increase response count by 1 every time someone responds'''
+        self.response_count += 1
+
+    def response_ratio(self):
+        if self.total_count == 0:
+            return 0  # Avoid division by zero
+        return self.response_count / self.total_count
 
     def __eq__(self, other):
         """Two MessageOpener objects are considered equal if they have the same pattern."""
@@ -14,4 +24,4 @@ class MessageOpener:
         return hash((self.pattern))
 
     def __repr__(self):
-        return f"Opener(pattern='{self.pattern}', count={self.total_count})"
+        return f"Opener: '{self.pattern}'\n    Number of times sent: {self.total_count}\n    Number of responses: {self.response_count}\n    Response rate: {round(self.response_ratio()*100, 2)}%"
