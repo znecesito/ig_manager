@@ -1,2 +1,6 @@
 connections*/
 messages*/
+__pycache__/
+data/connections/*
+data/messages/*
+.DS_Store
