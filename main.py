@@ -86,8 +86,8 @@ def message_tracker():
 def run_follower_analysis():
     
     # Define paths to JSON files
-    follower_file = os.path.join('data', 'connections', 'followers_and_following', 'followers_1.json')
-    following_file = os.path.join('data', 'connections', 'followers_and_following', 'following.json')
+    follower_file = os.path.join('data','connections', 'followers_1.json')
+    following_file = os.path.join('data', 'connections', 'following.json')
 
     # Initialize the FollowerService
     follower_service = FollowerService(follower_file, following_file)
