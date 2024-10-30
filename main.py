@@ -1,6 +1,7 @@
 import json
 import os
-from messageopener import MessageOpener
+# from models import MessageOpener
+from services.follower_reciprocity_service import FollowerService
 
 def response_checker(messages):
     for message in messages:
@@ -82,45 +83,24 @@ def message_tracker():
         print(opener)
     print("Yeah give up. What Future say? Chase a check. Never chase a b***.")
 
-def open_file_paths(input_file):
+def run_follower_analysis():
+    
+    # Define paths to JSON files
+    follower_file = os.path.join('data', 'connections', 'followers_and_following', 'followers_1.json')
+    following_file = os.path.join('data', 'connections', 'followers_and_following', 'following.json')
 
-    directory_path = input("Enter file path for %s: " % (input_file))
+    # Initialize the FollowerService
+    follower_service = FollowerService(follower_file, following_file)
 
-    with open(directory_path, 'r') as f:
-        return json.load(f)
+    # Perform follower reciprocity check
+    non_followers = follower_service.unfollow_calculator()
 
-def list_accounts(account_array):
-    account_list = []
-
-    for json_object in account_array:
-        account = json_object['string_list_data'][0]
-        account_list.append(account['value'])
-
-    return account_list
-
-def unfollow_calculator(followers, following):
-    count = 0
-
-    for account in following:
-        if account in followers:
-            continue
-        else:
-            count += 1
-            print("%d\t%s" % (count,account))  
+    print("These are the dickheads who aren't following you back:")
+    for user in non_followers:
+        print(f"{user}")
 
 def main():
-
-    message_tracker()
-    exit()
-    following_array = open_file_paths('following')
-    follower_array = open_file_paths('followers')
-    following_array = following_array['relationships_following']
-    following_accounts = list_accounts(following_array)
-    follower_accounts = list_accounts(follower_array)
-
-    print("These dickheads aren't following you back:")
-
-    unfollow_calculator(follower_accounts, following_accounts)
+    run_follower_analysis()
 
 if __name__ == "__main__":
-         main()
+        main()
