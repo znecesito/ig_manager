@@ -4,7 +4,7 @@ class MessageOpener:
         self.total_count = 1 # Total count this opener was used
         self.response_count = 0 # Response count for this opener
 
-    def response(self):
+    def add_to_response_count(self):
         '''Increase response count by 1 every time someone responds'''
         self.response_count += 1
 

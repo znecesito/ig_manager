@@ -1,32 +1,84 @@
 import os
+from models import MessageOpener
 from data.json_reader import load_json
 
 class MessageOpenerService:
-	def message_tracker():
+    def __init__(self, message_file):
+        self.message_dir = message_file
+        self._message_openers = set()
 
-    message_opener_set = set()
+    def _response_checker(self, messages):
+        for message in messages:
+            if message['sender_name'] != 'zacknecesito':
+                return True
+        return False
+
+    def _update_response_in_opener_set(self, pattern):
+        dummy_opener = MessageOpener(pattern)
+
+        for opener in self._message_openers:
+            if opener == dummy_opener:
+                opener.add_to_response_count()
+                return
+
+    def _add_message_opener_to_set(self, pattern):
+        new_opener = MessageOpener(pattern)
+
+        # Check if an opener with the same pattern already exists in the set
+        for opener in self._message_openers:
+            if opener == new_opener:
+                opener.total_count += 1  # Increase the count if a opener with the same make and model exists
+                return
+
+        self._message_openers.add(MessageOpener(pattern))  # Add the new opener to the set if it doesn't exist
+
+    def _load_all_messages(self):
+        """Loads all message threads from JSON files, including those in subdirectories."""
+        messages = []
+        for root, _, files in os.walk(self.message_dir):  # Recursively traverse subdirectories
+            for filename in files:
+                if filename.endswith('.json'):
+                    file_path = os.path.join(root, filename)
+                    messages.append(load_json(file_path))
+        return messages
+
+    def _pattern_identifier(self, message_pattern):
+
+        hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
+
+        first_word = message_pattern.lower().split()[0]
+        last_word = message_pattern.lower().split()[-1]
+
+
+        if 'english' in message_pattern.lower():
+            return "English or <insert language>?"
+        elif first_word in hi_pattern:
+            return "Hey/Hi/Hello <name>"
+        elif last_word == 'question':
+            return "I have a question/quick question"
+        elif 'exception' in message_pattern.lower():
+            return message_pattern
+        else:
+            return "Random opener (immature, hard to quantify through data)"
+
+    def message_opener_calculator(self):
+        messages = self._load_all_messages()
+
+        for message in messages:
+            try:
+                first_message = message['messages'][-1]['content']
+            except Exception as e:
+                first_message = "Exception: First message was unsent"
+
+            # Identify the first message pattern from the message
+            first_message_pattern = self._pattern_identifier(first_message)
+
+            # Add message opener to set or increase existing one by 1
+            self._add_message_opener_to_set(first_message_pattern)
+
+            if self._response_checker(message['messages']):
+                self._update_response_in_opener_set(first_message_pattern)
+
+        return self._message_openers
+
     
-    for subdir, dirs, files in os.walk('messages/inbox/'):
-        for file in files:
-            filepath = subdir + os.sep + file
-            if filepath.endswith(".json"): 
-                #print(filepath)
-                with open(filepath, 'r') as f:
-                    message_thread = json.load(f)
-
-                    # message_thread_length = len(message_thread['messages']) - 1
-                    try:
-                        first_message = message_thread['messages'][-1]['content']
-                    except Exception as e:
-                        first_message = "Exception: First message was unsent"
-
-                    opening_line_pattern = message_regulator(first_message) # Finds pattern in opener. Maybe should rename it to patternfinder
-                    
-                    add_message_opener_to_set(message_opener_set, opening_line_pattern) # Adding new opener object to set and adding to count if it object already exists within set                    
-                    
-                    if response_checker(message_thread['messages']):
-                        update_response_in_opener_set(message_opener_set, opening_line_pattern)
-    print("Let's check your field goal percentage gangy")
-    for opener in message_opener_set:
-        print(opener)
-    print("Yeah give up. What Future say? Chase a check. Never chase a b***.")
