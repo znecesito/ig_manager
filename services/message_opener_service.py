@@ -3,8 +3,16 @@ from models import MessageOpener
 from data.json_reader import load_json
 
 class MessageOpenerService:
-    def __init__(self, message_file):
-        self.message_dir = message_file
+    def __init__(self, message_dir, patterns):
+        """
+        Initializes the service with the path to the message data file and patterns.
+
+        :param message_dir: Path to the message data file.
+        :param patterns: List of patterns to identify message openers.
+
+        """
+        self.message_dir = message_dir
+        self._patterns = patterns
         self._message_openers = set()
 
     def _response_checker(self, messages):
@@ -44,22 +52,32 @@ class MessageOpenerService:
 
     def _pattern_identifier(self, message_pattern):
 
-        hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
-
         first_word = message_pattern.lower().split()[0]
         last_word = message_pattern.lower().split()[-1]
 
+        for pattern in self._patterns:
+            for word in pattern:
+                if word in message_pattern:
+                    return '|'.join(pattern)
+        
+        return 'Random Pattern'
 
-        if 'english' in message_pattern.lower():
-            return "English or <insert language>?"
-        elif first_word in hi_pattern:
-            return "Hey/Hi/Hello <name>"
-        elif last_word == 'question':
-            return "I have a question/quick question"
-        elif 'exception' in message_pattern.lower():
-            return message_pattern
-        else:
-            return "Random opener (immature, hard to quantify through data)"
+        # hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
+
+        # first_word = message_pattern.lower().split()[0]
+        # last_word = message_pattern.lower().split()[-1]
+
+
+        # if 'english' in message_pattern.lower():
+        #     return "English or <insert language>?"
+        # elif first_word in hi_pattern:
+        #     return "Hey/Hi/Hello <name>"
+        # elif last_word == 'question':
+        #     return "I have a question/quick question"
+        # elif 'exception' in message_pattern.lower():
+        #     return message_pattern
+        # else:
+        #     return "Random opener (immature, hard to quantify through data)"
 
     def message_opener_calculator(self):
         messages = self._load_all_messages()
@@ -68,10 +86,12 @@ class MessageOpenerService:
             try:
                 first_message = message['messages'][-1]['content']
             except Exception as e:
-                first_message = "Exception: First message was unsent"
+                # first_message = "Exception: First message was unsent"
+                self._add_message_opener_to_set("Exception: First message was unsent")
+                continue
 
             # Identify the first message pattern from the message
-            first_message_pattern = self._pattern_identifier(first_message)
+            first_message_pattern = self._pattern_identifier(first_message.lower())
 
             # Add message opener to set or increase existing one by 1
             self._add_message_opener_to_set(first_message_pattern)

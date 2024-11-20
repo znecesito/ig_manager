@@ -1,5 +1,6 @@
 import json
 import os
+from data.json_reader import load_json
 from services import FollowerService
 from services import MessageOpenerService
 
@@ -24,7 +25,11 @@ def run_message_analysis():
 
     # Define paths to JSON files
     message_dir = os.path.join('data', 'messages', 'inbox')
-    message_service = MessageOpenerService(message_dir)
+    pattern_dir = os.path.join('data', 'config', 'default_patterns.json')
+
+    patterns = load_json(pattern_dir)['patterns']
+
+    message_service = MessageOpenerService(message_dir, patterns)
 
     openers_and_response_rates_set = message_service.message_opener_calculator()
     print("Response rates by opener:")

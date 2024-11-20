@@ -1,0 +1,7 @@
+{
+  "patterns": [
+    ["hi", "hello", "hey", "hi!", "hey!", "hello!", "hi,", "hello,", "hey,"],
+    ["question"],
+    ["english"]
+  ]
+}
