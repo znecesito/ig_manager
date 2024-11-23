@@ -1,7 +1,16 @@
 {
   "patterns": [
-    ["hi", "hello", "hey", "hi!", "hey!", "hello!", "hi,", "hello,", "hey,"],
-    ["question"],
-    ["english"]
+    {
+      "list": ["hi", "hello", "hey", "hi!", "hey!", "hello!", "hi,", "hello,", "hey,"],
+      "rule": "any"
+    },
+    {
+      "list": ["question"],
+      "rule": "end"
+    },
+    {
+      "list": ["english"],
+      "rule": "any"
+    }
   ]
 }

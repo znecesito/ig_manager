@@ -28,7 +28,7 @@ def run_message_analysis():
     pattern_dir = os.path.join('data', 'config', 'default_patterns.json')
 
     patterns = load_json(pattern_dir)['patterns']
-
+    
     message_service = MessageOpenerService(message_dir, patterns)
 
     openers_and_response_rates_set = message_service.message_opener_calculator()

@@ -1,5 +1,12 @@
 class MessageOpener:
     def __init__(self, pattern):
+        """
+        Initialize a MessageOpener object.
+        :param pattern: A Pattern object associated with this opener.
+        """
+        # self.pattern = pattern  # The Pattern object
+        # self.total_count = 1    # Total count this opener was used
+        # self.response_count = 0 # Response count for this opener 
         self.pattern = pattern
         self.total_count = 1 # Total count this opener was used
         self.response_count = 0 # Response count for this opener

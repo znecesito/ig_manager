@@ -1,5 +1,5 @@
 import os
-from models import MessageOpener
+from models import MessageOpener, Pattern
 from data.json_reader import load_json
 
 class MessageOpenerService:
@@ -12,7 +12,7 @@ class MessageOpenerService:
 
         """
         self.message_dir = message_dir
-        self._patterns = patterns
+        self._patterns = [Pattern(p["list"], p.get("rule", "any")) for p in patterns]
         self._message_openers = set()
 
     def _response_checker(self, messages):
@@ -56,28 +56,12 @@ class MessageOpenerService:
         last_word = message_pattern.lower().split()[-1]
 
         for pattern in self._patterns:
-            for word in pattern:
-                if word in message_pattern:
-                    return '|'.join(pattern)
-        
+            match = pattern.matches(message_pattern)
+            if match:
+                return '|'.join(pattern.words)
+                
         return 'Random Pattern'
 
-        # hi_pattern = {'hi', 'hello', 'hey', 'hi!', 'hey!', 'hello!', 'hi,', 'hello,', 'hey,'}
-
-        # first_word = message_pattern.lower().split()[0]
-        # last_word = message_pattern.lower().split()[-1]
-
-
-        # if 'english' in message_pattern.lower():
-        #     return "English or <insert language>?"
-        # elif first_word in hi_pattern:
-        #     return "Hey/Hi/Hello <name>"
-        # elif last_word == 'question':
-        #     return "I have a question/quick question"
-        # elif 'exception' in message_pattern.lower():
-        #     return message_pattern
-        # else:
-        #     return "Random opener (immature, hard to quantify through data)"
 
     def message_opener_calculator(self):
         messages = self._load_all_messages()
