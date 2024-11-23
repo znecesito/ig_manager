@@ -58,9 +58,12 @@ class MessageOpenerService:
         for pattern in self._patterns:
             match = pattern.matches(message_pattern)
             if match:
-                return '|'.join(pattern.words)
-                
-        return 'Random Pattern'
+                return pattern
+                # print(type(pattern))
+                # exit()
+                # return '|'.join(pattern.words)
+
+        return Pattern(["Random Opener: Difficult to quantify"])
 
 
     def message_opener_calculator(self):
@@ -71,17 +74,18 @@ class MessageOpenerService:
                 first_message = message['messages'][-1]['content']
             except Exception as e:
                 # first_message = "Exception: First message was unsent"
-                self._add_message_opener_to_set("Exception: First message was unsent")
+                self._add_message_opener_to_set(Pattern(["Exception: First message was unsent"]))
                 continue
 
             # Identify the first message pattern from the message
             first_message_pattern = self._pattern_identifier(first_message.lower())
 
             # Add message opener to set or increase existing one by 1
-            self._add_message_opener_to_set(first_message_pattern)
+            if first_message_pattern is not None:
+                self._add_message_opener_to_set(first_message_pattern)
 
-            if self._response_checker(message['messages']):
-                self._update_response_in_opener_set(first_message_pattern)
+                if self._response_checker(message['messages']):
+                    self._update_response_in_opener_set(first_message_pattern)
 
         return self._message_openers
 

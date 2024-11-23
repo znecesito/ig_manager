@@ -29,3 +29,17 @@ class Pattern:
             elif self.rule == "any" and word in message:
                 return word
         return None
+
+    def __eq__(self, other):
+        """Two Pattern objects are equal if they have the same words and rule."""
+        if isinstance(other, Pattern):
+            return self.words == other.words and self.rule == other.rule
+        return False
+
+    def __hash__(self):
+        """Hash the Pattern object based on its words and rule."""
+        return hash((tuple(self.words), self.rule))
+
+    def __repr__(self):
+        """ Return a string representation of the Pattern object. Includes the words and rule. """
+        return f"Pattern(words={self.words!r}, rule={self.rule!r})"
