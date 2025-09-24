@@ -24,7 +24,7 @@ Currently, IG Manager supports two main use cases:
 
 ## 📦 Installation & Setup
 1. Clone the repository:
-	```bash
+```bash
    git clone https://github.com/yourusername/ig-manager.git
    cd ig-manager
 ```
