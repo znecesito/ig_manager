@@ -60,6 +60,8 @@ Fork the repo and create a feature branch (git checkout -b feature-xyz).
 Submit a pull request.
 Direct pushes to main are not allowed.
 
+---
+
 ## 📜 License
 
 Currently unlicensed. 
