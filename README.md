@@ -23,50 +23,44 @@ Currently, IG Manager supports two main use cases:
 ---
 
 ## 📦 Installation & Setup
-
 1. Clone the repository:
-   ```bash
+	```bash
    git clone https://github.com/yourusername/ig-manager.git
    cd ig-manager
-
-Make sure you have Python 3.8+ installed.
-
+```
+2. Make sure you have Python 3.8+ installed.
 Install dependencies (if you have a requirements.txt):
-
+```bash
 pip install -r requirements.txt
+```
 
-▶️ Usage
+---
 
-Export your Instagram data from Meta (profile → Settings → Privacy and Security → Download Data).
-
-Place the exported data (JSON/ZIP) inside the project directory.
-
-Run the script:
-
+## ▶️ Usage
+1. Export your Instagram data from Meta (profile → Settings → Privacy and Security → Download Data).
+2. Place the exported data (JSON/ZIP) inside the project directory.
+3. Run the script:
+```bash
 python main.py
+```
+4. Follow the command-line prompts.
 
+---
 
-Follow the command-line prompts.
+## 📊 Current Status
+- ✅ **Follower analysis** – working but CLI-only.
+- ⚠️ **Message analysis** – functional but incomplete, requires manual guidance.
+- 🔮 **Planned** – web/desktop frontend for easier usage.
 
-📊 Current Status
+---
 
-✅ Follower analysis – working but CLI-only.
-
-⚠️ Message analysis – functional but incomplete, requires manual guidance.
-
-🔮 Planned – web/desktop frontend for easier usage.
-
-🤝 Contributing
-
+## 🤝 Contributing
 This project is early-stage, but contributions are welcome!
-
 Fork the repo and create a feature branch (git checkout -b feature-xyz).
-
 Submit a pull request.
-
 Direct pushes to main are not allowed.
 
-📜 License
+## 📜 License
 
 Currently unlicensed. 
 
