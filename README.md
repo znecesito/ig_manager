@@ -1,33 +1,33 @@
-IG Manager
+# IG Manager
 
-A command-line tool for analyzing your Instagram data.
+A command-line tool for analyzing your Instagram data.  
+
 Currently, IG Manager supports two main use cases:
 
-Follower Analysis – Check who you follow that does not follow you back.
+1. **Follower Analysis** – Check who you follow that do not follow you back.  
+2. **Message Analysis** – Explore patterns in your Instagram messages (experimental / work-in-progress).  
 
-Message Analysis – Explore patterns in your Instagram messages (experimental / work-in-progress).
+---
 
-🚀 Features
+## 🚀 Features
+- Parse exported Instagram data from Meta.  
+- Return accurate lists of accounts that don’t follow back.  
+- Early-stage message analysis (requires manual steps to run).  
 
-Parse exported Instagram data from Meta.
+---
 
-Return accurate lists of accounts that don’t follow back.
+## 🛠️ Tech Stack
+- **Language**: Python  
+- **Interface**: Command-line (frontend planned in future versions)  
 
-Early-stage message analysis (requires manual steps to run).
+---
 
-🛠️ Tech Stack
+## 📦 Installation & Setup
 
-Language: Python
-
-Interface: Command-line (frontend planned in future versions)
-
-📦 Installation & Setup
-
-Clone the repository:
-
-git clone https://github.com/yourusername/ig-manager.git
-cd ig-manager
-
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/ig-manager.git
+   cd ig-manager
 
 Make sure you have Python 3.8+ installed.
 
