@@ -31,8 +31,9 @@ Currently, IG Manager supports two main use cases:
 <!-- 2. Make sure you have Python 3.8+ installed.
 Install dependencies (if you have a requirements.txt):
 ```bash
-pip install -r requirements.txt-->
-```
+pip install -r requirements.txt
+```-->
+
 
 ---
 
