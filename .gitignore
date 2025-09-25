@@ -1,6 +1,7 @@
 connections*/
 messages*/
 __pycache__/
+.pytest_cache/*
 data/connections/*
 data/messages/*
 .DS_Store
