@@ -1,7 +1,12 @@
+#Json files from meta
 connections*/
 messages*/
-__pycache__/
-.pytest_cache/*
 data/connections/*
 data/messages/*
+
+#cache/runtime related files or directories
+__pycache__/
+.pytest_cache/*
 .DS_Store
+venv/*
+.idea/*

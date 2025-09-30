@@ -1,20 +1,49 @@
-# api.py
-import os
-from fastapi import FastAPI
-from services import FollowerService
+# main.py
+from fastapi import FastAPI, File, UploadFile, Request, Form
+from fastapi.responses import HTMLResponse
+import json
+import uvicorn
 
 app = FastAPI()
 
-@app.get("/")
-def root():
-    return {"message": "Backend running!"}
+# HTML form for file upload
+html_form = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Upload JSON</title>
+    </head>
+    <body>
+        <h1>Upload a JSON file</h1>
+        <form action="/upload" enctype="multipart/form-data" method="post">
+            <input name="file" type="file" accept=".json">
+            <input type="submit" value="Upload">
+        </form>
+    </body>
+</html>
+"""
 
-@app.get("/analyze/followers")
-def analyze_followers():
-    follower_file = os.path.join("data", "connections", "followers_and_following", "followers_1.json")
-    following_file = os.path.join("data", "connections", "followers_and_following", "following.json")
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    return html_form
 
-    service = FollowerService(follower_file, following_file)
-    non_followers = service.unfollow_calculator()
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    if file.content_type != "application/json":
+        return {"error": "File is not JSON"}
 
-    return {"non_followers": non_followers}
+    # Read file contents
+    contents = await file.read()
+    try:
+        data = json.loads(contents)
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON"}
+
+    # Print JSON to console for validation
+    print("Uploaded JSON content:")
+    print(json.dumps(data, indent=4))
+
+    return {"message": "JSON uploaded and printed to console successfully", "data": data}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
