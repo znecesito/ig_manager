@@ -1,8 +1,10 @@
-# main.py
-from fastapi import FastAPI, File, UploadFile, Request, Form
-from fastapi.responses import HTMLResponse
 import json
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import HTMLResponse
 import uvicorn
+
+# Import your service
+from services import FollowerService
 
 app = FastAPI()
 
@@ -14,10 +16,13 @@ html_form = """
         <title>Upload JSON</title>
     </head>
     <body>
-        <h1>Upload a JSON file</h1>
+        <h1>Upload Followers/Following JSON files</h1>
         <form action="/upload" enctype="multipart/form-data" method="post">
-            <input name="file" type="file" accept=".json">
-            <input type="submit" value="Upload">
+            <label>Followers JSON:</label>
+            <input name="followers" type="file" accept=".json"><br><br>
+            <label>Following JSON:</label>
+            <input name="following" type="file" accept=".json"><br><br>
+            <input type="submit" value="Upload & Analyze">
         </form>
     </body>
 </html>
@@ -27,23 +32,30 @@ html_form = """
 async def read_root():
     return html_form
 
+
 @app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    if file.content_type != "application/json":
-        return {"error": "File is not JSON"}
+async def upload_and_analyze(
+    followers: UploadFile = File(...),
+    following: UploadFile = File(...)
+):
+    # Validate file types
+    if followers.content_type != "application/json" or following.content_type != "application/json":
+        return {"error": "Both files must be JSON"}
 
-    # Read file contents
-    contents = await file.read()
     try:
-        data = json.loads(contents)
+        followers_data = json.loads(await followers.read())
+        following_data = json.loads(await following.read())
     except json.JSONDecodeError:
-        return {"error": "Invalid JSON"}
+        return {"error": "Invalid JSON in one of the files"}
 
-    # Print JSON to console for validation
-    print("Uploaded JSON content:")
-    print(json.dumps(data, indent=4))
+    # Use your existing FollowerService with raw JSON instead of file paths
+    service = FollowerService(followers_data, following_data)
+    non_followers = service.unfollow_calculator()
 
-    return {"message": "JSON uploaded and printed to console successfully", "data": data}
+    return {
+        "message": "Analysis complete",
+        "non_followers": non_followers
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
