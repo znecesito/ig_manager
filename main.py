@@ -1,36 +1,22 @@
 import json
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 # Import your service
 from services import FollowerService
 
+
 app = FastAPI()
 
-# HTML form for file upload
-html_form = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Upload JSON</title>
-    </head>
-    <body>
-        <h1>Upload Followers/Following JSON files</h1>
-        <form action="/upload" enctype="multipart/form-data" method="post">
-            <label>Followers JSON:</label>
-            <input name="followers" type="file" accept=".json"><br><br>
-            <label>Following JSON:</label>
-            <input name="following" type="file" accept=".json"><br><br>
-            <input type="submit" value="Upload & Analyze">
-        </form>
-    </body>
-</html>
-"""
-
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-    return html_form
+# Enable CORS for React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # your React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/upload")
