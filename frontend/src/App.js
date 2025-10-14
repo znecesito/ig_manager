@@ -6,24 +6,38 @@ function App() {
   const [result, setResult] = useState(null);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!followers || !following) {
-      alert("Please upload both files");
-      return;
-    }
+  e.preventDefault();
+  setResult(null); // clear previous results
 
-    const formData = new FormData();
-    formData.append("followers", followers);
-    formData.append("following", following);
+  if (!followers || !following) {
+    alert("Please upload both files");
+    return;
+  }
 
-    const res = await fetch("http://127.0.0.1:8000/upload", {
-      method: "POST",
-      body: formData,
-    });
+  const formData = new FormData();
+  formData.append("followers", followers);
+  formData.append("following", following);
 
-    const data = await res.json();
-    setResult(data);
-  };
+  try {
+  const res = await fetch("http://127.0.0.1:8000/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => {
+    throw new Error("Response was not valid JSON");
+  });
+
+  if (!res.ok || data.error) {
+    throw new Error(data.error || "Server returned an error");
+  }
+
+  setResult(data);
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert("Something went wrong. Please make sure you uploaded the correct files.");
+  }
+};
 
   return (
     <div style={{ padding: "2rem" }}>
