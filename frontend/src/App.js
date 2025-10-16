@@ -70,14 +70,7 @@ function App() {
 
       {result && (
         <div style={styles.results}>
-          <h2 style={styles.resultTitle}>Results</h2>
-
-          {/* Optional message from backend */}
-          {result.message && (
-            <p style={{ marginBottom: "1rem", color: "#555" }}>{result.message}</p>
-          )}
-
-          {/* Dynamically render any array fields in the result */}
+          {/* Render any array fields */}
           {Object.entries(result).map(([key, value]) => {
             if (Array.isArray(value)) {
               return (
@@ -86,9 +79,16 @@ function App() {
                     {key.replace(/_/g, " ")} ({value.length})
                   </h3>
                   <ul style={styles.list}>
-                    {value.map((item, index) => (
+                    {value.map((username, index) => (
                       <li key={index} style={styles.listItem}>
-                        {item}
+                        <a
+                          href={`https://www.instagram.com/${username}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={styles.link}
+                        >
+                          instagram.com/{username}
+                        </a>
                       </li>
                     ))}
                   </ul>
