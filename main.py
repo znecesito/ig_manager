@@ -1,50 +1,47 @@
 import json
-import os
-from data.json_reader import load_json
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+# Import your service
 from services import FollowerService
-from services import MessageOpenerService
 
 
-def run_follower_analysis():
-    
-    # Define paths to JSON files
-    follower_file = os.path.join('data','connections', 'followers_and_following', 'followers_1.json')
-    following_file = os.path.join('data', 'connections', 'followers_and_following', 'following.json')
+app = FastAPI()
 
-    # Initialize the FollowerService
-    follower_service = FollowerService(follower_file, following_file)
+# Enable CORS for React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # your React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    # Perform follower reciprocity check
-    non_followers = follower_service.unfollow_calculator()
+@app.post("/upload")
+async def upload_and_analyze(
+    followers: UploadFile = File(...),
+    following: UploadFile = File(...)
+):
+    # Validate file types
+    try:
+        followers_data = json.loads(await followers.read())
+        following_data = json.loads(await following.read())
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON in one of the files"}
 
-    print("These are the dickheads who aren't following you back:")
-    for user in non_followers:
-        print(f"{user}")
+    # Use your existing FollowerService with raw JSON instead of file paths
+    try:
+        service = FollowerService(followers_data, following_data)
+        non_followers = service.unfollow_calculator()
 
-def run_message_analysis():
+        return {
+            "message": "Analysis complete",
+            "non_followers": non_followers
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
-    # Define paths to JSON files
-    message_dir = os.path.join('data', 'messages', 'inbox')
-    pattern_dir = os.path.join('data', 'config', 'default_patterns.json')
-
-    patterns = load_json(pattern_dir)['patterns']
-    
-    message_service = MessageOpenerService(message_dir, patterns)
-
-    openers_and_response_rates_set = message_service.message_opener_calculator()
-    print("Response rates by opener:")
-    for opener in openers_and_response_rates_set:
-        print(opener)
-
-def main():
-    user_task = input("What would you like to do today? \n\n1) Follower Reciprocity Analysis\n2) Message Opener Response Calculator\n\nSelect a number please: ")
-    
-    if user_task == '1':
-        run_follower_analysis()
-    elif user_task == '2':
-        run_message_analysis()
-    else:
-        print("Did not select correctly. Try Again.")
 
 if __name__ == "__main__":
-        main()
+    uvicorn.run(app, host="127.0.0.1", port=8000)
